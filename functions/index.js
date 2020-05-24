@@ -1,14 +1,19 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const serviceAccount = require('./xor_fire_key.json');
 const superCarge = require('superagent');
 const express = require('express');
 const bodyParser = require('body-parser');
 const firebaseHelper = require('firebase-functions-helper');
 
+// Replace your_service_account.json with your service account json file
+// place your json file at root of function directore
+const serviceAccount = require('./your_service_account.json');
+
 const main = express();
 const app = express();
-const collectonName = 'xortech_app';
+
+// Replace $YOUR_COLLECTION_NAME with yours
+const collectonName = '$YOUR_COLLECTION_NAME';
 
 main.use('/v1', app);
 main.use(bodyParser.json());
@@ -24,7 +29,8 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-exports.xortech = functions.https.onRequest(main);
+// change myFunc with your function name
+exports.myFunc = functions.https.onRequest(main);
 
 var totalPages = 0;
 app.get('/refresher', async (req, res) => {
@@ -42,7 +48,6 @@ app.get('/fetch', async (req, res) => {
         limit = 20;
     if (page === null || page === '' || page === undefined)
         page = 1;
-
 
     if (page < 1) {
         sendErrorResponse(res, 'page should be equals to or greater that 1');
@@ -65,13 +70,8 @@ app.get('/fetch', async (req, res) => {
     }
 });
 
-// Live URL
-const youtubeUrl = "https://www.googleapis.com/youtube/v3/search";
-
-// Mock URL
-//const youtubeUrl = "http://www.mocky.io/v2/5eca28d1300000492ca6cf1c"
-
 async function fetchYoutubeData(nextPageToken) {
+    const youtubeUrl = "https://www.googleapis.com/youtube/v3/search";
     totalPages++;
     var map = {
         'channelId': 'UCVoraDictyd89xgZt-J2Frw',
